@@ -1,6 +1,7 @@
 # frozen_string_literal: true
+
 class UsersController < ProtectedController
-  skip_before_action :authenticate, only: [:signup, :signin]
+  skip_before_action :authenticate, only: %i[signup signin]
 
   # POST '/sign-up'
   def signup
@@ -50,6 +51,8 @@ class UsersController < ProtectedController
 
   def show
     user = User.find(params[:id])
+    # assigns list of items associated with user to a new property
+    @users_items = user.items
     render json: user
   end
 

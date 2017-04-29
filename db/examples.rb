@@ -17,3 +17,21 @@
 #                password: 'abc123',
 #                password_confirmation: nil)
 # end
+
+Item.create([
+              {
+                title: 'First Snippet',
+                body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+                user_id: 1
+              },
+              {
+                title: 'Another Snippet',
+                body: 'Sed eiusmod tempor incididunt ut labore et dolore magna',
+                user_id: 1
+              },
+              {
+                title: 'Random Snippet',
+                body: 'Ut enim ad minim veniam, nostrud exercitation ullamco.',
+                user_id: 1
+              }
+            ])
