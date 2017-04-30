@@ -8,3 +8,5 @@ curl "${API}${URL_PATH}/$ID" \
   --header "Authorization: Token token=$TOKEN"
 
 echo
+
+#TOKEN=BAhJIiU1ZTI5MjJjMjA5ZmZhMTNjZGIxNDIyNGVhNTJhODNhNgY6BkVG--231e15f58b4575d10ab4ac856e0a06765d7316e9 ID=4 scripts/item.sh
