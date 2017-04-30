@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# PATCH	/items/:id	items#update
+# DELETE	/items/:id	items#destroy
 
 API="${API_ORIGIN:-http://localhost:4741}"
 URL_PATH="/items"
