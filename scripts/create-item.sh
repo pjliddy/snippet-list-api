@@ -10,12 +10,11 @@ curl "${API}${URL_PATH}" \
   --data '{
     "item": {
       "title": "'"${TITLE}"'",
-      "body": "'"${BODY}"'",
-      "user_id": "'"${ID}"'"
+      "body": "'"${BODY}"'"
     }
   }'
 
 echo
 
 
-# ID=1 TOKEN=BAhJIiU5NjJlNjJhOTE0ZTQ2OGE1MzRhYzJhODg0YjEyYTAxOQY6BkVG--1f182488579ceb59772931e78553b1f4630c69a5 TITLE='Created Snippet' BODY='Lorem ipsum dolor sit amet, consectetur adipiscing elit.' scripts/create-item.sh
+# TOKEN=BAhJIiVlNmE5YTA0ZGFiODBmZGMwNGJhMDcyYmVlYzQ4MjE4YQY6BkVG--4dd9367916929b0e0909df4ae90808dd4b40dabe TITLE='Test Snippet' BODY='Lorem ipsum dolor sit amet, consectetur adipiscing elit.' scripts/create-item.sh

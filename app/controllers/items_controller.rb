@@ -1,10 +1,15 @@
 # frozen_string_literal: true
 
+require 'pry'
+
 class ItemsController < ApplicationController
   before_action :set_item, only: %i[show update destroy]
+  before_action :curr_user, only: %i[create update destroy]
+  attr_reader :current_user
 
   # GET /items
   def index
+    # filter by user_id
     @items = Item.all
 
     render json: @items
@@ -17,7 +22,8 @@ class ItemsController < ApplicationController
 
   # POST /items
   def create
-    @item = Item.new(item_params)
+    # get current user_ID from application_controller.authenticate
+    @item = Item.new(item_params.merge(user_id: authenticate.id))
 
     if @item.save
       render json: @item, status: :created, location: @item
@@ -47,8 +53,12 @@ class ItemsController < ApplicationController
     @item = Item.find(params[:id])
   end
 
+  def curr_user
+    @current_user = current_user
+  end
+
   # Only allow a trusted parameter "white list" through.
   def item_params
-    params.require(:item).permit(:title, :body, :user_id)
+    params.require(:item).permit(:title, :body)
   end
 end
