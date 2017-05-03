@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'pry'
+# require 'pry'
 
 class ItemsController < ApplicationController
   before_action :set_item, only: %i[show update destroy]
