@@ -5,7 +5,6 @@
 class ItemsController < ApplicationController
   before_action :set_item, only: %i[show update destroy]
   before_action :curr_user, only: %i[create update destroy]
-  attr_reader :current_user
 
   # GET /items
   def index
@@ -22,8 +21,13 @@ class ItemsController < ApplicationController
 
   # POST /items
   def create
+    # binding.pry
+
     # get current user_ID from application_controller.authenticate
-    @item = Item.new(item_params.merge(user_id: authenticate.id))
+    # @item = Item.new(item_params.merge(user_id: authenticate.id))
+
+    set_current_user
+    @item = current_user.items.build(item_params)
 
     if @item.save
       render json: @item, status: :created, location: @item
