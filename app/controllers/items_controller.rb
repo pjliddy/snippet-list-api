@@ -1,15 +1,14 @@
 # frozen_string_literal: true
 
-# require 'pry'
-
 class ItemsController < ApplicationController
   before_action :set_item, only: %i[show update destroy]
-  before_action :curr_user, only: %i[create update destroy]
+  before_action :validate_user, only: %i[index create update destroy set_item]
 
   # GET /items
   def index
     # filter by user_id
-    @items = Item.all
+    # @items = Item.all
+    @items = current_user.items
 
     render json: @items
   end
@@ -21,12 +20,7 @@ class ItemsController < ApplicationController
 
   # POST /items
   def create
-    # binding.pry
-
-    # get current user_ID from application_controller.authenticate
-    # @item = Item.new(item_params.merge(user_id: authenticate.id))
-
-    set_current_user
+    # get current user_ID from application_controller
     @item = current_user.items.build(item_params)
 
     if @item.save
@@ -54,11 +48,13 @@ class ItemsController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_item
-    @item = Item.find(params[:id])
+    # @item = Item.find(params[:id])
+    validate_user
+    @item = current_user.items.find(params[:id])
   end
 
-  def curr_user
-    @current_user = current_user
+  def validate_user
+    set_current_user
   end
 
   # Only allow a trusted parameter "white list" through.
