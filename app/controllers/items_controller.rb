@@ -1,15 +1,14 @@
 # frozen_string_literal: true
 
-class ItemsController < ApplicationController
+class ItemsController < ProtectedController
   before_action :set_item, only: %i[show update destroy]
-  before_action :validate_user, only: %i[index create update destroy set_item]
+  # before_action :validate_user, only: %i[index create update destroy set_item]
 
   # GET /items
   def index
     # filter by user_id
     # @items = Item.all
     @items = current_user.items
-
     render json: @items
   end
 
@@ -49,13 +48,13 @@ class ItemsController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_item
     # @item = Item.find(params[:id])
-    validate_user
+    # validate_user
     @item = current_user.items.find(params[:id])
   end
 
-  def validate_user
-    set_current_user
-  end
+  # def validate_user
+  #   set_current_user
+  # end
 
   # Only allow a trusted parameter "white list" through.
   def item_params
