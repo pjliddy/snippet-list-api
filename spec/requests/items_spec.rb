@@ -1,46 +1,43 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
-RSpec.describe "Items", type: :request do
+RSpec.describe 'Items', type: :request do
   def item_params
     {
       title: 'Test Title for a Snippet',
-      body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+      body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit tempor.'
     }
   end
 
-  def items
-    Item.all
-  end
+  context 'while signed in' do
+    def user_params
+      {
+        email: 'alice@example.com',
+        password: 'foobarbaz',
+        password_confirmation: 'foobarbaz'
+      }
+    end
 
-  def item
-    Item.first
-  end
+    def headers
+      {
+        'HTTP_AUTHORIZATION' => "Token token=#{@token}"
+      }
+    end
 
-  before(:all) do
-    Item.create!(item_params)
-  end
+    before(:each) do
+      post '/sign-up', params: { credentials: user_params }
+      post '/sign-in', params: { credentials: user_params }
 
-  after(:all) do
-    Item.delete_all
-  end
+      @token = JSON.parse(response.body)['user']['token']
+      @user_id = JSON.parse(response.body)['user']['id']
+    end
 
-  describe 'GET /items' do
-    it 'lists all items' do
-      get items_path
-      expect(response).to have_http_status(200)
+    describe 'GET /items' do
+      it 'lists all items' do
+        get items_path,
+              headers: headers
+        expect(response).to be_success
+        expect(response.body).not_to be_empty
+      end
     end
   end
-
-  # describe 'GET /articles' do
-  #   it 'lists all articles' do
-  #     get '/articles'
-  #
-  #     expect(response).to be_success
-  #
-  #     articles_response = JSON.parse(response.body)
-  #     expect(articles_response.length).to eq(articles.count)
-  #     expect(articles_response.first['title']).to eq(article['title'])
-  #   end
 end
