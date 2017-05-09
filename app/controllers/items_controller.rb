@@ -6,8 +6,6 @@ class ItemsController < ProtectedController
 
   # GET /items
   def index
-    # filter by user_id
-    # @items = Item.all
     @items = current_user.items
     render json: @items
   end
