@@ -1,303 +1,123 @@
-[![General Assembly Logo](https://camo.githubusercontent.com/1a91b05b8f4d44b5bbfb83abac2b0996d8e26c92/687474703a2f2f692e696d6775722e636f6d2f6b6538555354712e706e67)](https://generalassemb.ly/education/web-development-immersive)
+# Snippet List
 
-# snippet-list-api
+This project is a code snippet collector. The concept is simple. Each item in the collection has a title and open text field to hold a code sample.
 
-Brought to you by Patrick Liddy.
+All developers have huge collections of bookmarks to articles, documentation, samples, etc. What I have find myself looking for most often is an example of how to do something. These solutions often get lost in the clutter of all the other related bookmarks managed by the browser.
 
-In order to make requests to your deployed API, you will need to set SECRET_KEY_BASE in the environment of the production API (using heroku config:set or the Heroku dashboard).
+## Project Links
+- Client GitHub Repository: https://github.com/pjliddy/snippet-list-client
+- Client Deployed: https://pjliddy.github.io/snippet-list-client/
+- API GitHub Repository: https://github.com/pjliddy/snippet-list-api
+- API Deployed: https://snippet-list-api.herokuapp.com/
 
-In order to make requests from your deployed client application, you will need to set CLIENT_ORIGIN in the environment of the production API (e.g. heroku config:set CLIENT_ORIGIN https://<github-username>.github.io).
+## Approach
+
+After creation of initial user stories and wireframes, the project was completed by following a lean, iterative approach. An MVP prototype was built to test and guarantee core functionality while leveraging tools like Bootstrap and Handlebars to maximize the quality of the output and allow for more focus on features.
+
+The core steps in the approach:
+
+1. Set up a **Rails back end** based on the user authentication API provided by GA
+1. Test all authentication API routes with **cURL scripts**.
+1. Use `js-template` to create a **prototype user interface** for sending form-based CRUD requests via the RESTful API to the server
+1. **Generate scaffolding** on the Rails back end for Item resources
+1. Update prototype front end to include form-based CRUD requests to the **[items API](https://github.com/pjliddy/snippet-list-api)**
+1. Iterate and continuously improve to complete user stories for **user-based tasks**
+1. Iterate and continuously improve to complete user stories for **item-based tasks**
+1. Create and prioritize new user stories as feature improvements are identified
+1. Leverage **Handlebars** and a **view controller** to manage the Single Page Applicaiton (SPA).
+1. Limit the UI **standard Bootstrap** for presentation layer HTML, CSS, and JavaScript to maximize default interactivity, theming, and responsive behavior.
+1. Leverage SASS to recompile a **custom Bootstrap theme** through use of SCSS variables files.
+1. Limit the use of index.scss for **feature-specific CSS adjustments**.
+
+### Separation of Concerns
+This phased, iterative approach also allowed for a clear separation of concerns in the way code was organized, especially on the client side.
+- The `auth` directory contains events, api, and ui JavaScript files for handling events, making api calls, and managing the results for user creation and authentication.
+- The `items` directory contains events, api, and ui JavaScript files for handling events, making api calls, and managing the results for user creation and authentication.
+- `view.js` manages the code to interact with auth & items and updates the presentation layer using jQuery & Handlebars templates
+
+### 3rd Party APIs
+
+This application leverages the following 3rd Party APIs and libraries:
+
+- [Handlebars](http://handlebarsjs.com/) - Handlebars is used to create a modular system that is managed by a custom view controller.
+- [Bootstrap](http://getbootstrap.com/) - Bootstrap was used in its default state for the prototype phase, then configured and recompiled at run time by adding a custom SCSS variables file, along with some minor changes to the core SCSS element generators. This approach to implementing Bootstrap has guaranteed a fully responsive site since the project began.
+- [Masonry](https://masonry.desandro.com/)- Masonry is a JavaScript grid layout library that provides a dynamic, fluid,  multi-column layout for components of varying heights.
+- [Google Fonts](https://fonts.google.com/) - The Roboto family from Google Fonts is used throughout the application.
+
+## User Stories
+
+### Authentication Stories
+1. As an unregistered user, I want to register and create an account so I can use the application. **(Complete)**
+1. As a registered user, I want to sign in so I can access my collection. **(Complete)**
+1. As an authenticated user, I want to change my password. **(Complete)**
+
+### Collection Stories
+1. As an authenticated user, I want to be able to see the snippets in my collection. **(Complete)**
+1. As an authenticated user, I want to add an snippet to my collection so I can refer to it later. **(Complete)**
+1. As an authenticated user, I want to delete a snippet in my collection. **(Complete)**
+1. As an authenticated user, I want to edit an item in my collection so that I can keep the content relevant. **(Complete)**
+
+## Preliminary Wireframe
+![Wireframe](https://s3.amazonaws.com/pliddy-ga/snippet-list/snippet-list.png)
+
+This wireframe provided the framework for building out the key application functionality.
 
 
-## Dependencies
+## Tables and Columns
 
-Install with `bundle install`.
+### Users
+| Column     | Type    |
+|------------|---------|
+| id         | INTEGER |
+| first_name | STRING  |
+| last_name  | STRING  |
+| email      | STRING  |
 
--   [`rails-api`](https://github.com/rails-api/rails-api)
--   [`rails`](https://github.com/rails/rails)
--   [`active_model_serializers`](https://github.com/rails-api/active_model_serializers)
--   [`ruby`](https://www.ruby-lang.org/en/)
--   [`postgres`](http://www.postgresql.org)
+### Items
+| Column     | Type     |
+|------------|-----------|
+| id         | INTEGER   |
+| title      | string    |
+| body       | TEXT      |
+| tag        | TEXT (v2) |
+| user_id    | user.id   |
 
-Until Rails 5 is released, this template should follow the most recent released
-version of Rails 4, as well as track `master` branches for `rails-api` and
-`active_model_serializers`.
 
-## Installation
+### Entity Relationship Diagram (ERD)
 
-1.  [Download](../../archive/master.zip) this template.
-1.  Unzip and rename the template directory.
-1.  Empty [`README.md`](README.md) and fill with your own content.
-1.  Move into the new project and `git init`.
-1.  Install dependencies with `bundle install`.
-1.  Rename your app module in `config/application.rb` (change
-    `RailsApiTemplate`).
-1.  Rename your project database in `config/database.yml` (change
-    `'rails-api-template'`).
-1.  Create a `.env` for sensitive settings (`touch .env`).
-1.  Generate new `development` and `test` secrets (`bundle exec rake secret`).
-1.  Store them in `.env` with keys `SECRET_KEY_BASE_<DEVELOPMENT|TEST>`
-    respectively.
-1.  In order to make requests to your deployed API, you will need to set
-    `SECRET_KEY_BASE` in the environment of the production API (using `heroku
-    config:set` or the Heroku dashboard).
-1.  In order to make requests from your deployed client application, you will
-    need to set `CLIENT_ORIGIN` in the environment of the production API (e.g.
-    `heroku config:set CLIENT_ORIGIN https://<github-username>.github.io`).
-1.  Setup your database with `bin/rake db:nuke_pave` or `bundle exec rake
-    db:nuke_pave`.
-1.  Run the API server with `bin/rails server` or `bundle exec rails server`.
+Users have a one to many relationship with Items
 
-## Structure
+**Items** (many) >--+- **Users** (one)
 
-This template follows the standard project structure in Rails 4.
 
-`curl` command scripts are stored in [`scripts`](scripts) with names that
-correspond to API actions.
+## API Routing
 
-User authentication is built-in.
+The following routes make up the API for users and items.
 
-## Tasks
-
-Developers should run these often!
-
--   `bin/rake routes` lists the endpoints available in your API.
--   `bin/rake test` runs automated tests.
--   `bin/rails console` opens a REPL that pre-loads the API.
--   `bin/rails db` opens your database client and loads the correct database.
--   `bin/rails server` starts the API.
--   `scripts/*.sh` run various `curl` commands to test the API. See below.
-
-<!-- TODO -   `rake nag` checks your code style. -->
-<!-- TODO -   `rake lint` checks your code for syntax errors. -->
-
-## API
-
-Use this as the basis for your own API documentation. Add a new third-level
-heading for your custom entities, and follow the pattern provided for the
-built-in user authentication documentation.
-
-Scripts are included in [`scripts`](scripts) to test built-in actions. Add your
-own scripts to test your custom API. As an alternative, you can write automated
-tests in RSpec to test your API.
-
-### Authentication
-
-| Verb   | URI Pattern            | Controller#Action |
-|--------|------------------------|-------------------|
-| POST   | `/sign-up`             | `users#signup`    |
-| POST   | `/sign-in`             | `users#signin`    |
-| PATCH  | `/change-password/:id` | `users#changepw`  |
-| DELETE | `/sign-out/:id`        | `users#signout`   |
-
-#### POST /sign-up
-
-Request:
-
-```sh
-curl http://localhost:4741/sign-up \
-  --include \
-  --request POST \
-  --header "Content-Type: application/json" \
-  --data '{
-    "credentials": {
-      "email": "'"${EMAIL}"'",
-      "password": "'"${PASSWORD}"'",
-      "password_confirmation": "'"${PASSWORD}"'"
-    }
-  }'
-```
-
-```sh
-EMAIL=ava@bob.com PASSWORD=hannah scripts/sign-up.sh
-```
-
-Response:
-
-```md
-HTTP/1.1 201 Created
-Content-Type: application/json; charset=utf-8
-
-{
-  "user": {
-    "id": 1,
-    "email": "ava@bob.com"
-  }
-}
-```
-
-#### POST /sign-in
-
-Request:
-
-```sh
-curl http://localhost:4741/sign-in \
-  --include \
-  --request POST \
-  --header "Content-Type: application/json" \
-  --data '{
-    "credentials": {
-      "email": "'"${EMAIL}"'",
-      "password": "'"${PASSWORD}"'"
-    }
-  }'
-```
-
-```sh
-EMAIL=ava@bob.com PASSWORD=hannah scripts/sign-in.sh
-```
-
-Response:
-
-```md
-HTTP/1.1 200 OK
-Content-Type: application/json; charset=utf-8
-
-{
-  "user": {
-    "id": 1,
-    "email": "ava@bob.com",
-    "token": "BAhJIiVlZDIwZTMzMzQzODg5NTBmYjZlNjRlZDZlNzYxYzU2ZAY6BkVG--7e7f77f974edcf5e4887b56918f34cd9fe293b9f"
-  }
-}
-```
-
-#### PATCH /change-password/:id
-
-Request:
-
-```sh
-curl --include --request PATCH "http://localhost:4741/change-password/$ID" \
-  --header "Authorization: Token token=$TOKEN" \
-  --header "Content-Type: application/json" \
-  --data '{
-    "passwords": {
-      "old": "'"${OLDPW}"'",
-      "new": "'"${NEWPW}"'"
-    }
-  }'
-```
-
-```sh
-ID=1 OLDPW=hannah NEWPW=elle TOKEN=BAhJIiVlZDIwZTMzMzQzODg5NTBmYjZlNjRlZDZlNzYxYzU2ZAY6BkVG--7e7f77f974edcf5e4887b56918f34cd9fe293b9f scripts/change-password.sh
-```
-
-Response:
-
-```md
-HTTP/1.1 204 No Content
-```
-
-#### DELETE /sign-out/:id
-
-Request:
-
-```sh
-curl http://localhost:4741/sign-out/$ID \
-  --include \
-  --request DELETE \
-  --header "Authorization: Token token=$TOKEN"
-```
-
-```sh
-ID=1 TOKEN=BAhJIiVlZDIwZTMzMzQzODg5NTBmYjZlNjRlZDZlNzYxYzU2ZAY6BkVG--7e7f77f974edcf5e4887b56918f34cd9fe293b9f scripts/sign-out.sh
-```
-
-Response:
-
-```md
-HTTP/1.1 204 No Content
-```
+[The repsoitory for the Items API can be found here](https://github.com/pjliddy/snippet-list-api)
 
 ### Users
 
-| Verb | URI Pattern | Controller#Action |
-|------|-------------|-------------------|
-| GET  | `/users`    | `users#index`     |
-| GET  | `/users/1`  | `users#show`      |
+| Verb   | URI                  | Controller#Action |
+|--------|----------------------|-------------------|
+| POST   | /sign-up             | users#signup      |
+| POST   | /sign-in             | users#signin      |
+| PATCH  | /change-password/:id | users#changepw    |
+| DELETE | /sign-out/:id        | users#signout     |
 
-#### GET /users
+### Items
+| Verb   | URI        | Controller#Action |
+|--------|------------|-------------------|
+| GET    | /items     | items#index       |
+| GET    | /items/:id | items#show        |
+| POST   | /items     | items#create      |
+| PATCH  | /items/:id | items#update      |
+| DELETE | /items/:id | items#destroy     |
 
-Request:
+## Next Steps
 
-```sh
-curl http://localhost:4741/users \
-  --include \
-  --request GET \
-  --header "Authorization: Token token=$TOKEN"
-```
+The next steps for improvement of the product are:
 
-```sh
-TOKEN=BAhJIiVlZDIwZTMzMzQzODg5NTBmYjZlNjRlZDZlNzYxYzU2ZAY6BkVG--7e7f77f974edcf5e4887b56918f34cd9fe293b9f scripts/users.sh
-```
-
-Response:
-
-```md
-HTTP/1.1 200 OK
-Content-Type: application/json; charset=utf-8
-
-{
-  "users": [
-    {
-      "id": 2,
-      "email": "bob@ava.com"
-    },
-    {
-      "id": 1,
-      "email": "ava@bob.com"
-    }
-  ]
-}
-```
-
-#### GET /users/:id
-
-Request:
-
-```sh
-curl --include --request GET http://localhost:4741/users/$ID \
-  --header "Authorization: Token token=$TOKEN"
-```
-
-```sh
-ID=2 TOKEN=BAhJIiVlZDIwZTMzMzQzODg5NTBmYjZlNjRlZDZlNzYxYzU2ZAY6BkVG--7e7f77f974edcf5e4887b56918f34cd9fe293b9f scripts/user.sh
-```
-
-Response:
-
-```md
-HTTP/1.1 200 OK
-Content-Type: application/json; charset=utf-8
-
-{
-  "user": {
-    "id": 2,
-    "email": "bob@ava.com"
-  }
-}
-```
-
-### Reset Database without dropping
-
-This is not a task developers should run often, but it is sometimes necessary.
-
-**locally**
-
-```sh
-bin/rake db:migrate VERSION=0
-bin/rake db:migrate db:seed db:examples
-```
-
-**heroku**
-
-```sh
-heroku run rake db:migrate VERSION=0
-heroku run rake db:migrate db:seed db:examples
-```
-
-## [License](LICENSE)
-
-1.  All content is licensed under a CC­BY­NC­SA 4.0 license.
-1.  All software code is licensed under GNU GPLv3. For commercial use or
-    alternative licensing, please contact legal@ga.co.
+1. Color **highlighting of code snippets** based on the appropriate language using a 3rd party library.
+1. The addition of a **additional tables** for langauges and/or categories
+1. More controlled **sorting and filtering** of the index of items, possibly using [Isotope](https://isotope.metafizzy.co/) to manage the UI
