@@ -2,7 +2,6 @@
 
 class ItemsController < ProtectedController
   before_action :set_item, only: %i[show update destroy]
-  # before_action :validate_user, only: %i[index create update destroy set_item]
 
   # GET /items
   def index
@@ -17,7 +16,7 @@ class ItemsController < ProtectedController
 
   # POST /items
   def create
-    # get current user_ID from application_controller
+    # get current user_ID from ProtectedController
     @item = current_user.items.build(item_params)
 
     if @item.save
@@ -45,14 +44,8 @@ class ItemsController < ProtectedController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_item
-    # @item = Item.find(params[:id])
-    # validate_user
     @item = current_user.items.find(params[:id])
   end
-
-  # def validate_user
-  #   set_current_user
-  # end
 
   # Only allow a trusted parameter "white list" through.
   def item_params
