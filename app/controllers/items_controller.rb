@@ -6,7 +6,8 @@ class ItemsController < ProtectedController
   # GET /items
   def index
     @items = current_user.items
-    render json: @items
+    sorted = @items.order('updated_at DESC')
+    render json: sorted
   end
 
   # GET /items/1
