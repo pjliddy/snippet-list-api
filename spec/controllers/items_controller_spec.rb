@@ -27,136 +27,236 @@ RSpec.describe ItemsController, type: :controller do
   # adjust the attributes here as well.
 
   let(:valid_attributes) {
-    # skip("Add a hash of attributes valid for your model")
+    # skip('Add a hash of attributes valid for your model')
     {
       title: 'This is an Item',
-      body: 'It\'s got some serious content.'
+      body: 'It\'s got some serious content.',
+      user_id: 2
     }
   }
 
-  let(:invalid_attributes) {
-    skip("Add a hash of attributes invalid for your model")
-  }
+  def item_params
+    {
+      title: 'Test Title for a Snippet',
+      body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+    }
+  end
+
+  def user_params
+    {
+      email: 'test1@test.com',
+      password: 'foobarbaz',
+      password_confirmation: 'foobarbaz'
+    }
+  end
+
+  after(:each) do
+    User.delete_all
+    Item.delete_all
+  end
+
+  let(:invalid_attributes) do
+    skip('Add a hash of attributes invalid for your model')
+  end
 
   # This should return the minimal set of values that should be in the session
   # in order to pass any filters (e.g. authentication) defined in
   # ItemsController. Be sure to keep this updated too.
+
   let(:valid_session) { {} }
 
-  describe "GET #index" do
-    skip "assigns all items as @items" do
-      item = Item.create! valid_attributes
+  before(:all) do
+    User.create!(user_params)
+  end
+
+  # describe 'GET index' do
+  #   # get index before each test
+  #   # before(:each) do
+  #     current_user = User.last
+  #     @item = current_user.items.build(item_params)
+  #   #   get :index
+  #   # end
+  #
+  #   # get index before each test
+  #   before(:each) do
+  #     current_user = User.last
+  #     @item = current_user.items.build(item_params)
+  #     get :index
+  #   end
+  #
+  #   it 'is succesful' do
+  #     # expect a 200 response to get request above (before)
+  #     expect(response.status).to eq(200)
+  #   end
+  #
+  #   it 'renders a JSON response' do
+  #     # expect response to be JSON (not nill & data returned in expected format)
+  #     result = JSON.parse(response.body)
+  #     expect(result).not_to be_nil
+  #     expect(result.first['title']).to eq(@item['title'])
+  #   end
+  # end
+
+  # Use Token Authentication
+  # def authenticate
+  #   @current_user =
+  #     authenticate_or_request_with_http_token(&AUTH_PROC)
+  # end
+  include ActionController::HttpAuthentication::Token::ControllerMethods
+  # include ActionController::HttpAuthentication::Token
+  describe 'GET #index' do
+    before(:each) do
+
+      def current_user
+        api_key = ApiKey.where(auth_token: token_and_options(request)).first
+        User.find(api_key.user_id) if api_key
+      end
+
+      # # @current_user = User.last
+      # token = User.last['token']
+      #
+      # authenticate_or_request_with_http_token do |token, options|
+      #   User.last
+      #   # User.find_by(auth_token: token)
+      # end
+
+      #
+      # @current_user =
+      #   authenticate_or_request_with_http_token(token)
+      # @item = Item.create!(item_params)
+
+      # @token = JSON.parse(response.body)['user']['token']
+      # request.env['HTTP_AUTHORIZATION'] = "Token token=#{@token}"
+      # @user = JSON.parse(response.body)['user']
+    end
+
+    it 'assigns all items as @items' do
+
+      # item = @user.items.build(item_params)
+
+      # item = Item.create! valid_attributes
+      # @current_user = User.last
+
+      item = current_user.items.build(item_params)
+
+      # authenticate
+      binding.pry
+
       get :index, params: {}, session: valid_session
+      result = JSON.parse(response.body)
+
+      puts result
+
       expect(assigns(:items)).to eq([item])
     end
   end
 
-  describe "GET #show" do
-    skip "assigns the requested item as @item" do
+  describe 'GET #show' do
+    skip 'assigns the requested item as @item' do
       item = Item.create! valid_attributes
       get :show, params: {id: item.to_param}, session: valid_session
       expect(assigns(:item)).to eq(item)
     end
   end
 
-  describe "GET #new" do
-    skip "assigns a new item as @item" do
+  describe 'GET #new' do
+    skip 'assigns a new item as @item' do
       get :new, params: {}, session: valid_session
       expect(assigns(:item)).to be_a_new(Item)
     end
   end
 
-  describe "GET #edit" do
-    skip "assigns the requested item as @item" do
+  describe 'GET #edit' do
+    skip 'assigns the requested item as @item' do
       item = Item.create! valid_attributes
       get :edit, params: {id: item.to_param}, session: valid_session
       expect(assigns(:item)).to eq(item)
     end
   end
 
-  describe "POST #create" do
-    context "with valid params" do
-      skip "creates a new Item" do
-        expect {
-          post :create, params: {item: valid_attributes}, session: valid_session
-        }.to change(Item, :count).by(1)
-      end
+  # describe 'POST #create' do
+  #   context 'with valid params' do
+  #     skip 'creates a new Item' do
+  #       expect {
+  #         post :create, params: {item: valid_attributes}, session: valid_session
+  #       }.to change(Item, :count).by(1)
+  #     end
+  #
+  #     skip 'assigns a newly created item as @item' do
+  #       post :create, params: {item: valid_attributes}, session: valid_session
+  #       expect(assigns(:item)).to be_a(Item)
+  #       expect(assigns(:item)).to be_persisted
+  #     end
+  #
+  #     skip 'redirects to the created item' do
+  #       post :create, params: {item: valid_attributes}, session: valid_session
+  #       expect(response).to redirect_to(Item.last)
+  #     end
+  #   end
+  #
+  #   context 'with invalid params' do
+  #     skip 'assigns a newly created but unsaved item as @item' do
+  #       post :create, params: {item: invalid_attributes}, session: valid_session
+  #       expect(assigns(:item)).to be_a_new(Item)
+  #     end
+  #
+  #     skip 're-renders the 'new' template' do
+  #       post :create, params: {item: invalid_attributes}, session: valid_session
+  #       expect(response).to render_template('new')
+  #     end
+  #   end
+  # end
 
-      skip "assigns a newly created item as @item" do
-        post :create, params: {item: valid_attributes}, session: valid_session
-        expect(assigns(:item)).to be_a(Item)
-        expect(assigns(:item)).to be_persisted
-      end
+  # describe 'PUT #update' do
+  #   context 'with valid params' do
+  #     let(:new_attributes) {
+  #       skip('Add a hash of attributes valid for your model')
+  #     }
+  #
+  #     skip 'updates the requested item' do
+  #       item = Item.create! valid_attributes
+  #       put :update, params: {id: item.to_param, item: new_attributes}, session: valid_session
+  #       item.reload
+  #       skip('Add assertions for updated state')
+  #     end
+  #
+  #     skip 'assigns the requested item as @item' do
+  #       item = Item.create! valid_attributes
+  #       put :update, params: {id: item.to_param, item: valid_attributes}, session: valid_session
+  #       expect(assigns(:item)).to eq(item)
+  #     end
+  #
+  #     skip 'redirects to the item' do
+  #       item = Item.create! valid_attributes
+  #       put :update, params: {id: item.to_param, item: valid_attributes}, session: valid_session
+  #       expect(response).to redirect_to(item)
+  #     end
+  #   end
+  #
+  #   context 'with invalid params' do
+  #     skip 'assigns the item as @item' do
+  #       item = Item.create! valid_attributes
+  #       put :update, params: {id: item.to_param, item: invalid_attributes}, session: valid_session
+  #       expect(assigns(:item)).to eq(item)
+  #     end
+  #
+  #     skip 're-renders the 'edit' template' do
+  #       item = Item.create! valid_attributes
+  #       put :update, params: {id: item.to_param, item: invalid_attributes}, session: valid_session
+  #       expect(response).to render_template('edit')
+  #     end
+  #   end
+  # end
 
-      skip "redirects to the created item" do
-        post :create, params: {item: valid_attributes}, session: valid_session
-        expect(response).to redirect_to(Item.last)
-      end
-    end
-
-    context "with invalid params" do
-      skip "assigns a newly created but unsaved item as @item" do
-        post :create, params: {item: invalid_attributes}, session: valid_session
-        expect(assigns(:item)).to be_a_new(Item)
-      end
-
-      skip "re-renders the 'new' template" do
-        post :create, params: {item: invalid_attributes}, session: valid_session
-        expect(response).to render_template("new")
-      end
-    end
-  end
-
-  describe "PUT #update" do
-    context "with valid params" do
-      let(:new_attributes) {
-        skip("Add a hash of attributes valid for your model")
-      }
-
-      skip "updates the requested item" do
-        item = Item.create! valid_attributes
-        put :update, params: {id: item.to_param, item: new_attributes}, session: valid_session
-        item.reload
-        skip("Add assertions for updated state")
-      end
-
-      skip "assigns the requested item as @item" do
-        item = Item.create! valid_attributes
-        put :update, params: {id: item.to_param, item: valid_attributes}, session: valid_session
-        expect(assigns(:item)).to eq(item)
-      end
-
-      skip "redirects to the item" do
-        item = Item.create! valid_attributes
-        put :update, params: {id: item.to_param, item: valid_attributes}, session: valid_session
-        expect(response).to redirect_to(item)
-      end
-    end
-
-    context "with invalid params" do
-      skip "assigns the item as @item" do
-        item = Item.create! valid_attributes
-        put :update, params: {id: item.to_param, item: invalid_attributes}, session: valid_session
-        expect(assigns(:item)).to eq(item)
-      end
-
-      skip "re-renders the 'edit' template" do
-        item = Item.create! valid_attributes
-        put :update, params: {id: item.to_param, item: invalid_attributes}, session: valid_session
-        expect(response).to render_template("edit")
-      end
-    end
-  end
-
-  describe "DELETE #destroy" do
-    skip "destroys the requested item" do
+  describe 'DELETE #destroy' do
+    skip 'destroys the requested item' do
       item = Item.create! valid_attributes
       expect {
         delete :destroy, params: {id: item.to_param}, session: valid_session
       }.to change(Item, :count).by(-1)
     end
 
-    skip "redirects to the items list" do
+    skip 'redirects to the items list' do
       item = Item.create! valid_attributes
       delete :destroy, params: {id: item.to_param}, session: valid_session
       expect(response).to redirect_to(items_url)

@@ -15,6 +15,7 @@ group :development, :test do
   gem 'dotenv-rails', '~> 2.1', '>= 2.1.1'
   gem 'pry', '~> 0.10'
   gem 'pry-byebug', '~> 3.3'
+  gem 'rails-controller-testing'
   gem 'rspec-rails', '~> 3.5'
   gem 'rubocop', '~> 0.46'
 end
